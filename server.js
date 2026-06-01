@@ -56,8 +56,8 @@ app.get('/sync', async (req, res) => {
     console.log('[SYNC] Buscando carrinhos abandonados...');
     const response = await axios.get(
       `https://api.dooki.com.br/v2/${YAMPI_ALIAS}/checkout/carts`,
-      { headers: yampiHeaders, params: { include: 'customer', limit: 200 }
-    );
+     { headers: yampiHeaders, params: { include: 'customer', limit: 200 } }
+);
 
     const carts = response.data?.data || [];
     let processed = 0;
