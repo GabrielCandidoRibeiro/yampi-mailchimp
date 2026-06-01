@@ -89,32 +89,33 @@ async function upsertMailchimpContact(email, firstName, lastName, total, cartId)
   const base = `https://${MAILCHIMP_SERVER}.api.mailchimp.com/3.0`;
   const auth = { username: 'anystring', password: MAILCHIMP_API_KEY };
 
-  await axios.put(
-    `${base}/lists/${MAILCHIMP_LIST_ID}/members/${subscriberHash}`,
-    {
-      email_address: email,
-      status_if_new: 'subscribed',
-      merge_fields: { 
-  FNAME: firstName, 
-  LNAME: lastName,
-  MMERGEB: {
-    addr1: '',
-    city: '',
-    state: '',
-    zip: '00000',
-    country: 'BR'
+  try {
+    await axios.put(
+      `${base}/lists/${MAILCHIMP_LIST_ID}/members/${subscriberHash}`,
+      {
+        email_address: email,
+        status_if_new: 'subscribed',
+        merge_fields: { FNAME: firstName, LNAME: lastName },
+      },
+      { auth }
+    );
+  } catch (err) {
+    console.warn(`[AVISO] Merge fields inválidos para ${email}, tentando sem merge fields...`);
+    await axios.put(
+      `${base}/lists/${MAILCHIMP_LIST_ID}/members/${subscriberHash}`,
+      {
+        email_address: email,
+        status_if_new: 'subscribed',
+      },
+      { auth }
+    );
   }
-},
-    },
-    { auth }
-  );
 
   await axios.post(
     `${base}/lists/${MAILCHIMP_LIST_ID}/members/${subscriberHash}/tags`,
     { tags: [{ name: 'carrinho-abandonado', status: 'active' }] },
     { auth }
   );
-
   console.log(`[MAILCHIMP] Processado: ${email}`);
 }
 
