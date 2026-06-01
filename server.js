@@ -94,7 +94,17 @@ async function upsertMailchimpContact(email, firstName, lastName, total, cartId)
     {
       email_address: email,
       status_if_new: 'subscribed',
-      merge_fields: { FNAME: firstName, LNAME: lastName },
+      merge_fields: { 
+  FNAME: firstName, 
+  LNAME: lastName,
+  MMERGEB: {
+    addr1: '',
+    city: '',
+    state: '',
+    zip: '00000',
+    country: 'BR'
+  }
+},
     },
     { auth }
   );
